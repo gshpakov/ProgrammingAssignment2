@@ -1,15 +1,38 @@
-## Put comments here that give an overall description of what your
-## functions do
+## This code implements special "matrix" object that represents the provided
+## true matrix object and also its inversed version.
+## The inversed version is calculated and cached only on the first request
 
-## Write a short comment describing this function
+## This function creates and initializes our object
+makeCacheMatrix <- function(x = matrix())
+{
+  x.inverse <- NULL
+  set <- function(y = matrix()) {
+    x <<- y
+    x.inverse <<- NULL
+  }
+  get <- function() x
+  setinverse <- function(inverse) x.inverse <<- inverse
+  getinverse <- function() x.inverse
 
-makeCacheMatrix <- function(x = matrix()) {
-
+  list(set = set, get = get, setinverse = setinverse, getinverse = getinverse)
 }
 
 
-## Write a short comment describing this function
+## This function uses previously created object to calculate and cache
+## the inversed matrix
+cacheSolve <- function(x, ...)
+{
+  inv <- x$getinverse()
+  if(!is.null(inv)) {
+    message("getting cached data")
+    return(inv)
+  }
 
-cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+  message("calculating the data...")
+  data <- x$get()
+  inv <- solve(data, ...)
+  x$setinverse(inv)
+
+  ## Return a matrix that is the inverse of 'x'
+  inv
 }
